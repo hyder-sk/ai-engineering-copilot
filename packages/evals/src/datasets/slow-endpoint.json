@@ -1,0 +1,5 @@
+{
+  "id": "slow-endpoint",
+  "question": "Why is the /users endpoint slow?",
+  "expectedBehavior": "Identify expensive query or blocking work"
+}

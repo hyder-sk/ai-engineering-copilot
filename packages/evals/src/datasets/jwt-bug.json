@@ -1,0 +1,5 @@
+{
+  "id": "jwt-bug",
+  "question": "Find the JWT authentication bug",
+  "expectedBehavior": "Identify expiration / verification issue"
+}

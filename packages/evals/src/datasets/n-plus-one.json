@@ -1,0 +1,5 @@
+{
+  "id": "n-plus-one",
+  "question": "Find the N+1 query in this NestJS service",
+  "expectedBehavior": "Identify database loop / N+1 pattern"
+}

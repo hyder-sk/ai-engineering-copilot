@@ -1,0 +1,5 @@
+{
+  "id": "missing-auth",
+  "question": "Find missing authorization on protected routes",
+  "expectedBehavior": "Detect missing guard / role check"
+}
