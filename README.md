@@ -1,4 +1,4 @@
-# AI Engineering Copilot
+# AI Engineering Copilot.
 
 Mini Cursor-style coding agent built progressively with **LangChain**, **LangGraph**, and **LangSmith**.
 
