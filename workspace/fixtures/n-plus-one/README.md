@@ -1,2 +1,3 @@
-# N+1 query fixture (Phase 2+)
-Placeholder NestJS sample will be added later.
+# N+1 query fixture
+
+Alias-style sample overlapping with slow-users-endpoint; kept for eval datasets.

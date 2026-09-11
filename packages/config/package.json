@@ -1,0 +1,14 @@
+{
+  "name": "@aec/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./env.ts",
+  "types": "./env.ts",
+  "exports": {
+    ".": "./env.ts"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
+}

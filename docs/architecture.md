@@ -1,5 +1,7 @@
 # Architecture
 
+Read the fresher tutorial first: [tutorial.md](./tutorial.md).
+
 ```text
 apps/web → apps/api → packages/agent (LangGraph) → tools / LLM / LangSmith
 ```

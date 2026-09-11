@@ -1,2 +1,3 @@
-# JWT expiry bug fixture (Phase 2+)
-Placeholder NestJS sample will be added later.
+# JWT expiry bug fixture
+
+Minimal NestJS-style auth sample with a JWT verification bug.

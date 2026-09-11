@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Engineering Copilot — Learning Flow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --bg-elev: #171e26;
+      --bg-card: #1c252f;
+      --line: #2c3a49;
+      --text: #e8eef4;
+      --muted: #8fa3b5;
+      --accent: #3dd6c3;
+      --accent-dim: rgba(61, 214, 195, 0.14);
+      --phase1: #5b9fd4;
+      --phase1-dim: rgba(91, 159, 212, 0.16);
+      --phase2: #e0a45c;
+      --phase2-dim: rgba(224, 164, 92, 0.16);
+      --phase3: #c084fc;
+      --phase3-dim: rgba(192, 132, 252, 0.16);
+      --done: #3dd6c3;
+      --planned: #5a6b7a;
+      --danger: #e07a6a;
+      --radius: 12px;
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Sora", system-ui, sans-serif;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(61, 214, 195, 0.08), transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, rgba(91, 159, 212, 0.1), transparent 50%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .wrap {
+      width: min(1100px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 2.5rem 0 4rem;
+    }
+
+    header.hero {
+      margin-bottom: 2.5rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-dim);
+    }
+
+    h1 {
+      font-size: clamp(1.75rem, 4vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 0 0 0.75rem;
+    }
+
+    .lede {
+      max-width: 42rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin: 0;
+    }
+
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.6rem;
+      margin: 2rem 0 0;
+    }
+
+    .chip {
+      border: 1px solid var(--line);
+      background: var(--bg-elev);
+      border-radius: 999px;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: inherit;
+      color: inherit;
+    }
+
+    .chip.done { border-color: rgba(61, 214, 195, 0.35); background: var(--accent-dim); cursor: pointer; }
+    .chip.planned { color: var(--muted); cursor: default; }
+    .chip b { font-weight: 600; color: var(--text); }
+    .chip.planned b { color: var(--muted); }
+    .chip.done:hover { filter: brightness(1.08); }
+
+    .accordion-hint {
+      margin: 1rem 0 0;
+      color: var(--planned);
+      font-size: 0.82rem;
+    }
+
+    details.phase,
+    details.panel {
+      margin-top: 1.25rem;
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    details.phase:first-of-type { margin-top: 2rem; }
+
+    details.phase > summary.phase-head,
+    details.panel > summary.panel-head {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+    }
+
+    details.phase > summary.phase-head::-webkit-details-marker,
+    details.panel > summary.panel-head::-webkit-details-marker {
+      display: none;
+    }
+
+    details.phase[open] > summary.phase-head,
+    details.panel[open] > summary.panel-head {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .phase-head h2,
+    .panel-head h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .chevron {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #0c1116;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.7rem;
+      transition: transform 0.18s ease;
+      flex: 0 0 auto;
+    }
+
+    details[open] > summary .chevron {
+      transform: rotate(90deg);
+      color: var(--accent);
+      border-color: rgba(61, 214, 195, 0.35);
+    }
+
+    .summary-right {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .expand-hint {
+      font-size: 0.72rem;
+      color: var(--planned);
+      font-weight: 500;
+    }
+
+    details[open] .expand-hint { display: none; }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.3rem 0.6rem;
+      border-radius: 999px;
+    }
+
+    .badge.p1 { background: var(--phase1-dim); color: var(--phase1); }
+    .badge.p2 { background: var(--phase2-dim); color: var(--phase2); }
+    .badge.p3 { background: var(--phase3-dim); color: var(--phase3); }
+    .badge.soon { background: rgba(90, 107, 122, 0.25); color: var(--planned); }
+
+    .phase-body { padding: 1.5rem; }
+
+    .one-liner {
+      margin: 0 0 1.25rem;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius);
+      border-left: 3px solid var(--accent);
+      background: var(--bg-card);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .one-liner strong { color: var(--text); }
+
+    /* Flow pipeline */
+    .pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      align-items: stretch;
+    }
+
+    .step {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+    }
+
+    .step.p1-accent { border-color: rgba(91, 159, 212, 0.45); }
+    .step.p2-accent { border-color: rgba(224, 164, 92, 0.45); }
+    .step.p3-accent { border-color: rgba(192, 132, 252, 0.45); }
+
+    .step-top {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .num {
+      flex: 0 0 auto;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+
+    .step.p1-accent .num { background: var(--phase1-dim); color: var(--phase1); }
+    .step.p2-accent .num { background: var(--phase2-dim); color: var(--phase2); }
+    .step.p3-accent .num { background: var(--phase3-dim); color: var(--phase3); }
+
+    .step h3 {
+      margin: 0 0 0.25rem;
+      font-size: 0.98rem;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .code {
+      margin-top: 0.65rem;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.75rem;
+      color: #b7c9d8;
+      background: #0c1116;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.55rem 0.7rem;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .arrow {
+      display: flex;
+      justify-content: center;
+      padding: 0.35rem 0;
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .branch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    @media (max-width: 720px) {
+      .branch { grid-template-columns: 1fr; }
+    }
+
+    .branch .step { min-height: 100%; }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.7rem;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      font-family: "IBM Plex Mono", monospace;
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      background: #0c1116;
+      border: 1px solid var(--line);
+      color: #9db3c5;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 800px) {
+      .compare { grid-template-columns: 1fr; }
+    }
+
+    .compare article {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.25rem;
+    }
+
+    .compare h3 { margin: 0 0 0.75rem; font-size: 1rem; }
+    .compare ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .compare li { margin: 0.35rem 0; }
+    .compare li strong { color: var(--text); }
+
+    .glossary-body {
+      padding: 0 1.5rem 1.5rem;
+    }
+
+    .glossary-body h2 { display: none; }
+
+    dl {
+      display: grid;
+      gap: 0.85rem;
+      margin: 0;
+    }
+
+    dt {
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--accent);
+      font-family: "IBM Plex Mono", monospace;
+    }
+
+    dd {
+      margin: 0.15rem 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    details.panel.soon-panel {
+      opacity: 0.85;
+      border-style: dashed;
+      box-shadow: none;
+    }
+
+    .soon-body {
+      padding: 0 1.5rem 1.25rem;
+    }
+
+    .soon-body p { margin: 0; color: var(--planned); font-size: 0.9rem; }
+
+    footer.note {
+      margin-top: 2.5rem;
+      color: var(--planned);
+      font-size: 0.82rem;
+      text-align: center;
+    }
+
+    footer.note code {
+      font-family: "IBM Plex Mono", monospace;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="eyebrow">AI Engineering Copilot</div>
+      <h1>Learning Flow</h1>
+      <p class="lede">
+        A fresher-friendly map of how this project works so far.
+        Open this file in a browser. We update it after every phase.
+      </p>
+
+      <div class="progress" aria-label="Phase progress">
+        <button type="button" class="chip done" data-open="#phase-1"><b>P1</b> Chains ✅</button>
+        <button type="button" class="chip done" data-open="#phase-2"><b>P2</b> RAG ✅</button>
+        <button type="button" class="chip done" data-open="#phase-3"><b>P3</b> Tools ✅</button>
+        <div class="chip planned"><b>P4</b> LangSmith</div>
+        <div class="chip planned"><b>P5–7</b> LangGraph</div>
+        <div class="chip planned"><b>P8+</b> Multi-agent</div>
+      </div>
+      <p class="accordion-hint">Click a phase header (or a green chip) to expand / collapse.</p>
+    </header>
+
+    <!-- PHASE 1 -->
+    <details class="phase" id="phase-1" open>
+      <summary class="phase-head">
+        <h2><span class="chevron" aria-hidden="true">▸</span> Phase 1 — Snippet Analyzer (LCEL Chain)</h2>
+        <div class="summary-right">
+          <span class="expand-hint">Click to expand</span>
+          <span class="badge p1">Done</span>
+        </div>
+      </summary>
+      <div class="phase-body">
+        <p class="one-liner">
+          <strong>Big idea:</strong> You give the AI a piece of code as text.
+          It replies with a summary or a structured JSON report.
+          No tools. No folder reading. Not an agent yet — just a pipeline.
+        </p>
+
+        <div class="pipeline">
+          <div class="step p1-accent">
+            <div class="step-top">
+              <div class="num">1</div>
+              <div>
+                <h3>Start — sample code string</h3>
+                <p>A NestJS <code>UsersController</code> with an N+1 loop is hardcoded in the demo script.</p>
+                <div class="code">scripts/run-phase1.ts → SAMPLE_CODE</div>
+                <div class="tag-row">
+                  <span class="tag">input: string</span>
+                  <span class="tag">no filesystem</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p1-accent">
+            <div class="step-top">
+              <div class="num">2</div>
+              <div>
+                <h3>Prompt template</h3>
+                <p>Builds chat messages: system instructions + human message with <code>{code}</code>.</p>
+                <div class="code">ChatPromptTemplate.fromMessages([system, human])</div>
+                <div class="tag-row">
+                  <span class="tag">prompts/analyzer.ts</span>
+                  <span class="tag">prompts/summarize.ts</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p1-accent">
+            <div class="step-top">
+              <div class="num">3</div>
+              <div>
+                <h3>LCEL pipe → Chat model</h3>
+                <p><code>prompt.pipe(model)</code> means: run prompt, then send messages to OpenAI.</p>
+                <div class="code">createChatModel() → ChatOpenAI (gpt-4o-mini, temperature 0)</div>
+                <div class="tag-row">
+                  <span class="tag">models/chat-model.ts</span>
+                  <span class="tag">ENV.OPENAI_API_KEY</span>
+                  <span class="tag">LCEL</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="branch">
+            <div class="step p1-accent">
+              <div class="step-top">
+                <div class="num">4a</div>
+                <div>
+                  <h3>summarizeChain</h3>
+                  <p>Normal chat completion → plain English paragraph.</p>
+                  <div class="code">output: string</div>
+                </div>
+              </div>
+            </div>
+            <div class="step p1-accent">
+              <div class="step-top">
+                <div class="num">4b</div>
+                <div>
+                  <h3>analyzeChain + Zod</h3>
+                  <p><code>withStructuredOutput(analysisSchema)</code> forces typed JSON.</p>
+                  <div class="code">language, framework, issues[], summary</div>
+                  <div class="tag-row">
+                    <span class="tag">use .nullable() not .optional()</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p1-accent">
+            <div class="step-top">
+              <div class="num">5</div>
+              <div>
+                <h3>Result you saw</h3>
+                <p>High severity performance issue: sequential awaits inside a loop (N+1 style).</p>
+                <div class="code">npm run phase1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- PHASE 2 -->
+    <details class="phase" id="phase-2">
+      <summary class="phase-head">
+        <h2><span class="chevron" aria-hidden="true">▸</span> Phase 2 — Project Analyzer (RAG)</h2>
+        <div class="summary-right">
+          <span class="expand-hint">Click to expand</span>
+          <span class="badge p2">Done</span>
+        </div>
+      </summary>
+      <div class="phase-body">
+        <p class="one-liner">
+          <strong>Big idea:</strong> You give a <em>folder</em>, not a string.
+          The system loads files, chunks them, embeds them, finds the pieces most related to your question,
+          then runs a structured analysis on that context. Still not a tool-using agent.
+        </p>
+
+        <div class="pipeline">
+          <div class="step p2-accent">
+            <div class="step-top">
+              <div class="num">1</div>
+              <div>
+                <h3>Repo path</h3>
+                <p>Default fixture: NestJS app with a slow <code>/users</code> endpoint.</p>
+                <div class="code">workspace/fixtures/slow-users-endpoint</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p2-accent">
+            <div class="step-top">
+              <div class="num">2</div>
+              <div>
+                <h3>Document loader</h3>
+                <p>Walk disk → each file becomes a LangChain <code>Document</code> (text + metadata.path).</p>
+                <div class="code">loadRepoDocuments() → documentsLoaded: 6</div>
+                <div class="tag-row">
+                  <span class="tag">rag/loader.ts</span>
+                  <span class="tag">.ts .js .json .md</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p2-accent">
+            <div class="step-top">
+              <div class="num">3</div>
+              <div>
+                <h3>Text splitter</h3>
+                <p>Large files → overlapping chunks. Small fixture ≈ 1 chunk per file.</p>
+                <div class="code">splitCodeDocuments() → chunksIndexed: 6</div>
+                <div class="tag-row">
+                  <span class="tag">rag/splitter.ts</span>
+                  <span class="tag">RecursiveCharacterTextSplitter</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p2-accent">
+            <div class="step-top">
+              <div class="num">4</div>
+              <div>
+                <h3>Embeddings + vector store</h3>
+                <p>Each chunk → number vector via OpenAI embeddings, stored in RAM.</p>
+                <div class="code">OpenAIEmbeddings + MemoryVectorStore.fromDocuments()</div>
+                <div class="tag-row">
+                  <span class="tag">rag/embeddings.ts</span>
+                  <span class="tag">rag/vector-store.ts</span>
+                  <span class="tag">text-embedding-3-small</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p2-accent">
+            <div class="step-top">
+              <div class="num">5</div>
+              <div>
+                <h3>Retrieve by question</h3>
+                <p>Embed the user question → find nearest chunks (similarity search).</p>
+                <div class="code">"Why is /users slow?" → similaritySearch(query, k)</div>
+                <div class="tag-row">
+                  <span class="tag">rag/retriever.ts</span>
+                  <span class="tag">retrievedSources listed in meta</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p2-accent">
+            <div class="step-top">
+              <div class="num">6</div>
+              <div>
+                <h3>Project analysis chain</h3>
+                <p>Same LCEL idea as Phase 1, but prompt gets <code>{request}</code> + retrieved <code>{context}</code>.</p>
+                <div class="code">analyzeProjectChain + projectAnalysisSchema (adds dependencies[])</div>
+                <div class="tag-row">
+                  <span class="tag">project/analyze-project.ts</span>
+                  <span class="tag">chains/analyze-project.chain.ts</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p2-accent">
+            <div class="step-top">
+              <div class="num">7</div>
+              <div>
+                <h3>Result you saw</h3>
+                <p>Explicit <strong>N+1 query</strong> in <code>UsersController.findAll</code>, with deps from package.json.</p>
+                <div class="code">npm run phase2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- PHASE 3 -->
+    <details class="phase" id="phase-3">
+      <summary class="phase-head">
+        <h2><span class="chevron" aria-hidden="true">▸</span> Phase 3 — Tools + Agent Loop</h2>
+        <div class="summary-right">
+          <span class="expand-hint">Click to expand</span>
+          <span class="badge p3">Done</span>
+        </div>
+      </summary>
+      <div class="phase-body">
+        <p class="one-liner">
+          <strong>Big idea:</strong> The LLM <em>chooses</em> tools (search, read, test, git…) in a loop until it can answer.
+          This is the first real agent behavior — still before LangGraph.
+        </p>
+
+        <div class="pipeline">
+          <div class="step p3-accent">
+            <div class="step-top">
+              <div class="num">1</div>
+              <div>
+                <h3>Question + workspace sandbox</h3>
+                <p>Agent is scoped to a folder. Tools cannot read outside that root.</p>
+                <div class="code">runCodingAgent({ workspaceRoot, question })</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p3-accent">
+            <div class="step-top">
+              <div class="num">2</div>
+              <div>
+                <h3>Bind tools to the chat model</h3>
+                <p>OpenAI receives tool schemas. Model may return <code>tool_calls</code> instead of plain text.</p>
+                <div class="code">createChatModel().bindTools(createWorkspaceTools(root))</div>
+                <div class="tag-row">
+                  <span class="tag">list_files</span>
+                  <span class="tag">read_file</span>
+                  <span class="tag">search_code</span>
+                  <span class="tag">run_tests</span>
+                  <span class="tag">run_linter</span>
+                  <span class="tag">git_diff</span>
+                  <span class="tag">git_log</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p3-accent">
+            <div class="step-top">
+              <div class="num">3</div>
+              <div>
+                <h3>Agent loop</h3>
+                <p>While model returns tool_calls → execute each tool → append ToolMessage → call model again.</p>
+                <div class="code">LLM → tool_calls → tools.run → ToolMessage → LLM → … → final answer</div>
+                <div class="tag-row">
+                  <span class="tag">agent/run-coding-agent.ts</span>
+                  <span class="tag">maxIterations default 8</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="arrow" aria-hidden="true">↓</div>
+
+          <div class="step p3-accent">
+            <div class="step-top">
+              <div class="num">4</div>
+              <div>
+                <h3>Final answer</h3>
+                <p>When there are no more tool_calls, content is the answer (with file path citations).</p>
+                <div class="code">npm run phase3</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <!-- COMPARE -->
+    <details class="panel" id="compare">
+      <summary class="panel-head">
+        <h2><span class="chevron" aria-hidden="true">▸</span> Phase 1 vs 2 vs 3</h2>
+        <div class="summary-right">
+          <span class="expand-hint">Click to expand</span>
+          <span class="badge soon">Reference</span>
+        </div>
+      </summary>
+      <div class="phase-body">
+        <div class="compare">
+          <article>
+            <h3>Differences</h3>
+            <ul>
+              <li><strong>Phase 1:</strong> you paste code → one LLM call</li>
+              <li><strong>Phase 2:</strong> folder → RAG retrieve → one LLM call</li>
+              <li><strong>Phase 3:</strong> LLM picks tools in a loop until done</li>
+              <li><strong>Both 1–2:</strong> fixed pipelines (chains)</li>
+              <li><strong>Phase 3:</strong> first agent loop (still not LangGraph)</li>
+            </ul>
+          </article>
+          <article>
+            <h3>Fresher takeaway</h3>
+            <ul>
+              <li><strong>Chain</strong> = fixed pipeline (Phase 1–2)</li>
+              <li><strong>RAG</strong> = retrieve context, then chain (Phase 2)</li>
+              <li><strong>Tool calling</strong> = model requests a function with args</li>
+              <li><strong>Agent loop</strong> = think → act → observe → repeat (Phase 3)</li>
+              <li><strong>LangGraph</strong> = explicit state machine for agents (Phase 5+)</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </details>
+
+    <!-- GLOSSARY -->
+    <details class="panel" id="glossary">
+      <summary class="panel-head">
+        <h2><span class="chevron" aria-hidden="true">▸</span> Glossary (for freshers)</h2>
+        <div class="summary-right">
+          <span class="expand-hint">Click to expand</span>
+          <span class="badge soon">Reference</span>
+        </div>
+      </summary>
+      <div class="glossary-body">
+        <dl>
+          <div>
+            <dt>LCEL</dt>
+            <dd>LangChain Expression Language — connect steps with <code>.pipe()</code> (prompt → model → parser).</dd>
+          </div>
+          <div>
+            <dt>Prompt template</dt>
+            <dd>A message recipe with holes like <code>{code}</code> that get filled at runtime.</dd>
+          </div>
+          <div>
+            <dt>Zod schema</dt>
+            <dd>TypeScript-friendly shape definition. Used so the LLM returns valid structured JSON.</dd>
+          </div>
+          <div>
+            <dt>Document</dt>
+            <dd>LangChain object: file text (<code>pageContent</code>) + metadata (path, etc.).</dd>
+          </div>
+          <div>
+            <dt>Chunk</dt>
+            <dd>A smaller piece of a document so embeddings and prompts stay manageable.</dd>
+          </div>
+          <div>
+            <dt>Embedding</dt>
+            <dd>A list of numbers representing meaning. Similar text → nearby vectors.</dd>
+          </div>
+          <div>
+            <dt>Vector store</dt>
+            <dd>Database (here: in-memory) that stores embeddings and supports similarity search.</dd>
+          </div>
+          <div>
+            <dt>RAG</dt>
+            <dd>Retrieval-Augmented Generation — find relevant text first, then ask the LLM.</dd>
+          </div>
+          <div>
+            <dt>Tool calling</dt>
+            <dd>The model returns a structured request to run a named tool with arguments (not just text).</dd>
+          </div>
+          <div>
+            <dt>ToolMessage</dt>
+            <dd>Message that sends a tool’s result back into the chat history for the next LLM turn.</dd>
+          </div>
+          <div>
+            <dt>Agent loop</dt>
+            <dd>Repeat: model decides → tool runs → observation → model decides again, until a final answer.</dd>
+          </div>
+          <div>
+            <dt>N+1 query</dt>
+            <dd>Fetch a list, then fetch related data once per item in a loop (slow).</dd>
+          </div>
+        </dl>
+      </div>
+    </details>
+
+    <details class="panel soon-panel" id="next">
+      <summary class="panel-head">
+        <h2><span class="chevron" aria-hidden="true">▸</span> Next phases (coming here)</h2>
+        <div class="summary-right">
+          <span class="expand-hint">Click to expand</span>
+          <span class="badge soon">Planned</span>
+        </div>
+      </summary>
+      <div class="soon-body">
+        <p>
+          Phase 4 LangSmith → Phase 5–7 LangGraph + human approval →
+          Phase 8 multi-agent → Phase 9 evals → Phase 10 production UI/API.
+          Each time we ship a phase, this HTML page gets a new expandable section.
+        </p>
+      </div>
+    </details>
+
+    <footer class="note">
+      File: <code>docs/learning-flow.html</code> · Open in browser · Update after every phase
+    </footer>
+  </div>
+  <script>
+    document.querySelectorAll("[data-open]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = document.querySelector(btn.getAttribute("data-open"));
+        if (!(target instanceof HTMLDetailsElement)) return;
+        target.open = true;
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  </script>
+</body>
+</html>
